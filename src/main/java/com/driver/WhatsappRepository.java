@@ -38,20 +38,19 @@ public class WhatsappRepository {
     }
 
     public Group createGroup(List<User> users) {
-        Group group =  new Group();
+
         //A user can belong to exactly one group and has a unique name. how to handle if not unique and also present in another group?
-        if(users.size() > 2){
+        if(users.size() == 2){
+            Group group = new Group(users.get(1).toString(),1);
+            groupUserMap.put(group,users);
+            return group;
+        }else {
             customGroupCount++;
-            group = new Group("Group " + customGroupCount,users.size());
+            Group group = new Group("Group " + customGroupCount,users.size());
             adminMap.put(group,users.get(0));
             groupUserMap.put(group,users);
-        }else if(users.size() == 2){
-            group = new Group(users.get(1).toString(),1);
-            List<User> list = new ArrayList<>();
-            list.add(users.get(1));
-            groupUserMap.put(group,list);
+            return group;
         }
-        return group;
     }
 
     public int createMessage(String content) {
@@ -62,7 +61,7 @@ public class WhatsappRepository {
 
     public int sendMessage(Message message, User sender, Group group) throws RuntimeException {
         if(!groupUserMap.containsKey(group)){
-            throw new RuntimeException("Group does not exist");
+            throw new RuntimeException("group does not exist");
         }else{
             for(User user : groupUserMap.get(group)){
                 if(user.getMobile().equals(sender.getMobile())){
@@ -83,7 +82,7 @@ public class WhatsappRepository {
             throw new RuntimeException("Approver does not have rights");
         }else {
             adminMap.put(group,user);
-            return "SUCCESS";
+            return "Success";
         }
     }
 
