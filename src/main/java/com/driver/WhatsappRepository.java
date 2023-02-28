@@ -30,7 +30,7 @@ public class WhatsappRepository {
 
     public String createUser(String name, String mobile) throws Exception {
         if(userMobile.contains(mobile)){
-            throw new RuntimeException("mobile number already exists");
+            throw new RuntimeException("User already exists");
         }else{
             User user = new User(name,mobile);
             userMobile.add(mobile);
@@ -42,7 +42,7 @@ public class WhatsappRepository {
 
         //A user can belong to exactly one group and has a unique name. how to handle if not unique and also present in another group?
         if(users.size() == 2){
-            Group group = new Group(users.get(1).toString(),1);
+            Group group = new Group(users.get(1).getName(),1);
             groupUserMap.put(group,users);
             groupMessageMap.put(group,new ArrayList<Message>());
             return group;
@@ -64,7 +64,7 @@ public class WhatsappRepository {
 
     public int sendMessage(Message message, User sender, Group group) throws RuntimeException {
         if(!groupUserMap.containsKey(group)){
-            throw new RuntimeException("group does not exist");
+            throw new RuntimeException("Group does not exist");
         }else{
             for(User user : groupUserMap.get(group)){
                 if(user.equals(sender)){
@@ -80,7 +80,7 @@ public class WhatsappRepository {
 
     public String changeAdmin(User approver, User user, Group group)throws RuntimeException {
         if(!groupUserMap.containsKey(group)){
-            throw new RuntimeException("group does not exist");
+            throw new RuntimeException("Group does not exist");
         } else if (!adminMap.containsKey(group) || !adminMap.get(group).equals(approver)) {
             throw new RuntimeException("Approver does not have rights");
         }else {
