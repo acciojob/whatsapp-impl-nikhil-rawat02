@@ -32,9 +32,10 @@ public class WhatsappRepository {
         if(userMobile.contains(mobile)){
             throw new RuntimeException("mobile number already exists");
         }else{
+            User user = new User(name,mobile);
             userMobile.add(mobile);
         }
-        return "Success";
+        return "SUCCESS";
     }
 
     public Group createGroup(List<User> users) {
@@ -43,11 +44,13 @@ public class WhatsappRepository {
         if(users.size() == 2){
             Group group = new Group(users.get(1).toString(),1);
             groupUserMap.put(group,users);
+            groupMessageMap.put(group,new ArrayList<Message>());
             return group;
         }else {
             customGroupCount++;
             Group group = new Group("Group " + customGroupCount,users.size());
             adminMap.put(group,users.get(0));
+            groupMessageMap.put(group,new ArrayList<Message>());
             groupUserMap.put(group,users);
             return group;
         }
@@ -64,8 +67,8 @@ public class WhatsappRepository {
             throw new RuntimeException("group does not exist");
         }else{
             for(User user : groupUserMap.get(group)){
-                if(user.getMobile().equals(sender.getMobile())){
-                    List<Message> messageList= groupMessageMap.getOrDefault(group,new ArrayList<Message>());
+                if(user.equals(sender)){
+                    List<Message> messageList= groupMessageMap.get(group);
                     messageList.add(message);
                     senderMap.put(message,sender);
                     return  messageList.size();
@@ -82,7 +85,7 @@ public class WhatsappRepository {
             throw new RuntimeException("Approver does not have rights");
         }else {
             adminMap.put(group,user);
-            return "Success";
+            return "SUCCESS";
         }
     }
 
