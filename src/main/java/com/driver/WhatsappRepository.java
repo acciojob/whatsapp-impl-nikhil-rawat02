@@ -42,7 +42,7 @@ public class WhatsappRepository {
 
         //A user can belong to exactly one group and has a unique name. how to handle if not unique and also present in another group?
         if(users.size() == 2){
-            Group group = new Group(users.get(1).getName(),1);
+            Group group = new Group(users.get(1).getName(),users.size());
             groupUserMap.put(group,users);
             groupMessageMap.put(group,new ArrayList<Message>());
             return group;
