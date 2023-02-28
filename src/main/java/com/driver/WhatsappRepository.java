@@ -34,7 +34,7 @@ public class WhatsappRepository {
         }else{
             userMobile.add(mobile);
         }
-        return "UserId has been created";
+        return "Success";
     }
 
     public Group createGroup(List<User> users) {
@@ -47,8 +47,9 @@ public class WhatsappRepository {
             groupUserMap.put(group,users);
         }else if(users.size() == 2){
             group = new Group(users.get(1).toString(),1);
-            adminMap.put(group,users.get(0));
-            groupUserMap.put(group,users);
+            List<User> list = new ArrayList<>();
+            list.add(users.get(1));
+            groupUserMap.put(group,list);
         }
         return group;
     }
@@ -61,7 +62,7 @@ public class WhatsappRepository {
 
     public int sendMessage(Message message, User sender, Group group) throws RuntimeException {
         if(!groupUserMap.containsKey(group)){
-            throw new RuntimeException(" group does not exist");
+            throw new RuntimeException("Group does not exist");
         }else{
             for(User user : groupUserMap.get(group)){
                 if(user.getMobile().equals(sender.getMobile())){
@@ -71,7 +72,7 @@ public class WhatsappRepository {
                     return  messageList.size();
                 }
             }
-            throw new RuntimeException("sender is not a member of the group");
+            throw new RuntimeException("You are not allowed to send message");
         }
     }
 
@@ -79,7 +80,7 @@ public class WhatsappRepository {
         if(!groupUserMap.containsKey(group)){
             throw new RuntimeException("group does not exist");
         } else if (!adminMap.containsKey(group) || !adminMap.get(group).equals(approver)) {
-            throw new RuntimeException(" approver is not the current admin of the group");
+            throw new RuntimeException("Approver does not have rights");
         }else {
             adminMap.put(group,user);
             return "SUCCESS";
